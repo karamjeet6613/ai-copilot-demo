@@ -1,4 +1,4 @@
-from langchain.tools import Tool
+from langchain_classic.tools import Tool
 from tavily import TavilyClient
 import os
 
