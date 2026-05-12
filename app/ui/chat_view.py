@@ -118,7 +118,7 @@ def render_chat(session_id: str):
                         st.markdown(f"**Step {i}: {tool_name}**")
                         if tool_input:
                             st.code(str(tool_input), language="text")
-                        st.info(f"Result: {str(obs)[:400]}")
+                        st.caption(f"Result: {str(obs)[:400]}")
 
         save_message_to_chat(session_id, active_chat_id, "assistant", output)
         st.session_state.messages.append({"role": "assistant", "content": output})
