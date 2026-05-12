@@ -19,15 +19,15 @@ Thought: think about what to do
 Action: the action to take, must be one of [{tool_names}]
 Action Input: the input to the action
 Observation: the result of the action
-Thought: I now know the final answer from the observation above
+Thought: I now know the final answer
 Final Answer: the complete answer
 
 CRITICAL RULES:
-- After ONE search observation, immediately write "Thought: I now know the final answer" then "Final Answer:"
-- NEVER search the same query twice
-- NEVER use "None" as an action
-- If observation contains relevant info, use it immediately for Final Answer
-- Keep Final Answer concise and direct
+- After getting search results, IMMEDIATELY write "Thought: I now know the final answer" then "Final Answer:"
+- NEVER search more than once per sub-question
+- NEVER use "None" as an action — always use WebSearch, Calculator or DatabaseQuery
+- Extract the answer directly from the Observation
+- Final Answer must be a complete, direct response
 
 Begin!
 
