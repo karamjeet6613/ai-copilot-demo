@@ -1,6 +1,6 @@
 import streamlit as st
 from config import get_llm
-from langchain.schema import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage, SystemMessage
 from app.memory.supabase_memory import save_decision, load_decisions
 import json, re
 
