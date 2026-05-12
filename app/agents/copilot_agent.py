@@ -1,5 +1,5 @@
-from langchain.agents import AgentExecutor, create_react_agent
-from langchain.prompts import PromptTemplate
+from langchain_classic.agents import AgentExecutor, create_react_agent
+from langchain_classic.prompts import PromptTemplate
 from config import get_llm
 from app.tools.search_tool import search_tool
 from app.tools.calculator_tool import calculator_tool
