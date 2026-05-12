@@ -3,7 +3,7 @@ from app.agents.task_agent import run_task_agent
 from app.memory.supabase_memory import load_tasks
 
 def render_agent_dashboard(session_id: str):
-    st.subheader("Agent Execution Layer — Autonomous Tasks")
+    st.subheader("Astra - Agent Execution Layer — Autonomous Tasks")
     st.caption("Define a multi-step task. The agent will plan, execute, and report back.")
 
     with st.form("task_form"):

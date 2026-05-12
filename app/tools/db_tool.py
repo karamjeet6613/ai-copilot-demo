@@ -1,4 +1,4 @@
-from langchain_classic.tools import Tool
+from langchain.tools import Tool
 from app.memory.supabase_memory import client
 
 def query_database(query: str) -> str:

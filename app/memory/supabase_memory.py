@@ -60,3 +60,59 @@ def load_decisions(session_id: str):
         .order("created_at", desc=True) \
         .execute()
     return result.data or []
+import uuid as uuid_lib
+
+def create_new_chat(session_id: str, title: str = "New Chat") -> str:
+    """Create a new named chat session and return its chat_id."""
+    chat_id = str(uuid_lib.uuid4())[:8]
+    client.table("conversations").insert({
+        "session_id": session_id,
+        "role": "system",
+        "content": f"__CHAT_TITLE__:{title}",
+        "chat_id": chat_id
+    }).execute()
+    return chat_id
+
+def load_chats(session_id: str) -> list:
+    """Load all distinct chat sessions for a user."""
+    result = client.table("conversations") \
+        .select("chat_id, content, created_at") \
+        .eq("session_id", session_id) \
+        .eq("role", "system") \
+        .order("created_at", desc=True) \
+        .execute()
+    chats = []
+    for row in (result.data or []):
+        title = row["content"].replace("__CHAT_TITLE__:", "")
+        chats.append({
+            "chat_id": row["chat_id"],
+            "title": title,
+            "created_at": row["created_at"]
+        })
+    return chats
+
+def load_chat_messages(chat_id: str) -> list:
+    """Load all messages for a specific chat_id."""
+    result = client.table("conversations") \
+        .select("role, content, created_at") \
+        .eq("chat_id", chat_id) \
+        .neq("role", "system") \
+        .order("created_at", desc=False) \
+        .execute()
+    return result.data or []
+
+def delete_chat(chat_id: str):
+    """Delete all messages for a chat_id."""
+    client.table("conversations") \
+        .delete() \
+        .eq("chat_id", chat_id) \
+        .execute()
+
+def save_message_to_chat(session_id: str, chat_id: str, role: str, content: str):
+    """Save a message linked to a specific chat_id."""
+    client.table("conversations").insert({
+        "session_id": session_id,
+        "chat_id": chat_id,
+        "role": role,
+        "content": content
+    }).execute()

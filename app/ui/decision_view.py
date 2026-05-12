@@ -17,8 +17,8 @@ Given a question or decision, respond ONLY with valid JSON in this exact format:
 Do not include any text outside the JSON."""
 
 def render_decision_board(session_id: str):
-    st.subheader("Decision Intelligence Board")
-    st.caption("Powered by Groq (speed layer) — get structured decision analysis in seconds.")
+    st.subheader("Astra - Decision Intelligence Board")
+    st.caption("Powered by Groq (speed layer) — structured decision analysis in seconds.")
 
     question = st.text_input(
         "Decision question",
