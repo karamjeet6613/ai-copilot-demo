@@ -1,5 +1,5 @@
 from langchain_classic.agents import AgentExecutor, create_react_agent
-from langchain import hub
+from langchain_classic import hub
 from config import get_llm, Config
 from app.tools.search_tool import search_tool
 from app.tools.calculator_tool import calculator_tool
