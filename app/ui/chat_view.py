@@ -52,6 +52,50 @@ def render_chat(session_id: str):
                             st.session_state.messages = []
                         st.rerun()
 
+        # Live AI Metrics
+        st.divider()
+        with st.expander("📊 Live AI Metrics", expanded=False):
+            last = st.session_state.get("last_metrics")
+            history = st.session_state.get("metrics_history", [])
+            q_count = st.session_state.get("query_count", 0)
+            s_count = st.session_state.get("success_count", 0)
+
+            if last:
+                avg_latency = round(
+                    sum(m["latency"] for m in history) / len(history), 2
+                ) if history else 0
+                success_rate = round(
+                    (s_count / q_count) * 100, 1
+                ) if q_count > 0 else 0
+                total_cost = round(
+                    sum(m["total_cost"] for m in history), 6
+                )
+
+                st.markdown("**Last Query**")
+                st.caption(f"⚡ Latency: `{last['latency']}s`")
+                st.caption(f"🔤 Tokens: `{last['total_tokens']}`")
+                st.caption(f"💰 Cost: `${last['total_cost']:.6f}`")
+                st.caption(f"🎯 Confidence: `{int(last['confidence']*100)}%`")
+
+                st.markdown("**Session Stats**")
+                st.caption(f"📊 Avg Latency: `{avg_latency}s`")
+                st.caption(f"📝 Queries: `{q_count}`")
+                st.caption(f"✅ Success Rate: `{success_rate}%`")
+                st.caption(f"💵 Total Cost: `${total_cost:.6f}`")
+
+                st.markdown("**Last Query Details**")
+                st.caption(f"🤖 Model: `{last['model']}`")
+                st.caption(f"🎛 Mode: `{last['mode']}`")
+                st.caption(f"🔧 Tools: `{', '.join(last['tools_used']) or 'None'}`")
+                st.caption(f"🔁 Iterations: `{last['iterations_used']}`")
+                st.caption(f"📥 Input tokens: `{last['input_tokens']}`")
+                st.caption(f"📤 Output tokens: `{last['output_tokens']}`")
+            else:
+                st.caption("Ask a question to see live metrics.")
+
+    # ── Main area ────────────────────────────────────────────────────────
+                            
+
     # ── Main area ────────────────────────────────────────────────────────
     st.subheader("🌟 Astra AI Copilot")
     st.caption("Ask anything — Astra reasons, searches, and recommends.")
@@ -65,6 +109,15 @@ def render_chat(session_id: str):
         st.session_state.messages = []
 
     active_chat_id = st.session_state.active_chat_id
+    # Initialize metrics state
+    if "metrics_history" not in st.session_state:
+        st.session_state.metrics_history = []
+    if "last_metrics" not in st.session_state:
+        st.session_state.last_metrics = None
+    if "query_count" not in st.session_state:
+        st.session_state.query_count = 0
+    if "success_count" not in st.session_state:
+        st.session_state.success_count = 0
 
     # Load from Supabase if messages not in session state
     # This fixes the refresh bug — messages survive page reloads
@@ -107,6 +160,15 @@ def render_chat(session_id: str):
 
             output = result["output"]
             steps = result["steps"]
+            metrics = result.get("metrics", {})
+
+            # Store metrics
+            if metrics:
+                st.session_state.last_metrics = metrics
+                st.session_state.metrics_history.append(metrics)
+                st.session_state.query_count += 1
+                if metrics.get("success"):
+                    st.session_state.success_count += 1
 
             st.markdown(output)
 
@@ -124,3 +186,6 @@ def render_chat(session_id: str):
 
         save_message_to_chat(session_id, active_chat_id, "assistant", output)
         st.session_state.messages.append({"role": "assistant", "content": output})
+
+        # Rerun AFTER everything is saved — output reloads from session state
+        st.rerun()
