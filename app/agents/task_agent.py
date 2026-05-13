@@ -38,7 +38,7 @@ def run_task_agent(session_id: str, task_description: str) -> dict:
     tools = [search_tool, calculator_tool, db_tool]
 
     agent = create_react_agent(
-        llm=get_llm("primary"),
+        llm=get_llm("agent"),
         tools=tools,
         prompt=REACT_PROMPT
     )

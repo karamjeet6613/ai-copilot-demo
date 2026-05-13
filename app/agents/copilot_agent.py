@@ -42,7 +42,7 @@ COPILOT_SYSTEM = """You are Astra AI Copilot — an AI decision-intelligence ass
 5. End every response with a clear Recommendation or Summary
 """
 
-def run_copilot(session_id: str, user_input: str) -> dict:
+def run_copilot(session_id: str, user_input: str, mode: str = "balanced") -> dict:
     history = load_history(session_id, limit=10)
     history_text = "\n".join(
         f"{m['role'].upper()}: {m['content']}" for m in history
@@ -53,7 +53,7 @@ def run_copilot(session_id: str, user_input: str) -> dict:
     tools = [search_tool, calculator_tool, db_tool]
 
     agent = create_react_agent(
-        llm=get_llm("primary"),
+        llm=get_llm(mode),
         tools=tools,
         prompt=REACT_PROMPT
     )

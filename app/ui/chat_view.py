@@ -56,6 +56,8 @@ def render_chat(session_id: str):
     st.subheader("🌟 Astra AI Copilot")
     st.caption("Ask anything — Astra reasons, searches, and recommends.")
 
+    mode = "balanced"
+
     # Auto-create a chat if none is active
     if not st.session_state.get("active_chat_id"):
         chat_id = create_new_chat(session_id, title="Chat 1")
@@ -101,7 +103,7 @@ def render_chat(session_id: str):
         # Run agent and show response
         with st.chat_message("assistant"):
             with st.spinner("Astra is thinking..."):
-                result = run_copilot(session_id, user_input)
+                result = run_copilot(session_id, user_input, mode=mode)
 
             output = result["output"]
             steps = result["steps"]

@@ -30,7 +30,7 @@ def render_decision_board(session_id: str):
         run = st.button("Analyse Decision", type="primary")
 
     if run and question:
-        llm = get_llm("speed")  # Use Groq for fast structured output
+        llm = get_llm("decision")  # Use decision temperature 0.2
 
         with st.spinner("Analysing..."):
             messages = [
